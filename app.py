@@ -22,6 +22,250 @@ _LOCATIONS = [
     "Mumbai, India",
 ]
 
+BACKGROUND_VIDEO_URL = (
+    "https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260315_073750_51473149-4350-4920-ae24-c8214286f323.mp4"
+)
+
+
+def inject_liquid_glass_theme():
+    st.markdown(
+        f"""
+<div class="bg-video-wrap" aria-hidden="true">
+  <video class="bg-video" autoplay muted loop playsinline>
+    <source src="{BACKGROUND_VIDEO_URL}" type="video/mp4" />
+  </video>
+  <div class="bg-overlay"></div>
+</div>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Source+Serif+4:ital,wght@0,400;0,600;1,400;1,600&display=swap');
+
+  :root {{
+    --bg-0: rgba(10, 10, 12, 0.92);
+    --bg-1: rgba(18, 18, 22, 0.65);
+    --glass-weak: rgba(255, 255, 255, 0.06);
+    --glass-strong: rgba(255, 255, 255, 0.10);
+    --text-100: rgba(255, 255, 255, 0.96);
+    --text-80: rgba(255, 255, 255, 0.80);
+    --text-60: rgba(255, 255, 255, 0.62);
+    --shadow-soft: 0 18px 50px rgba(0, 0, 0, 0.55);
+    --shadow-glow-inset: inset 0 1px 0 rgba(255, 255, 255, 0.14), inset 0 0 30px rgba(255, 255, 255, 0.06);
+    --radius-md: 16px;
+    --radius-lg: 22px;
+    --radius-pill: 999px;
+    --blur-weak: blur(6px);
+    --blur-strong: blur(46px);
+    --stroke: rgba(255, 255, 255, 0.08);
+  }}
+
+  /* Background video (fixed, behind everything) */
+  .bg-video-wrap {{
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+  }}
+  .bg-video {{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: saturate(0.9) contrast(1.05) brightness(0.55);
+    transform: scale(1.03);
+  }}
+  .bg-overlay {{
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(1200px 800px at 20% 10%, rgba(255,255,255,0.06), transparent 60%),
+      radial-gradient(900px 700px at 80% 20%, rgba(255,255,255,0.05), transparent 62%),
+      linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.72));
+  }}
+
+  /* Global typography + base colors */
+  html, body, [class*="css"]  {{
+    font-family: 'Poppins', system-ui, -apple-system, Segoe UI, sans-serif !important;
+    color: var(--text-100);
+  }}
+  em, i {{
+    font-family: 'Source Serif 4', Georgia, serif !important;
+    font-style: italic;
+    letter-spacing: -0.01em;
+  }}
+
+  /* Make Streamlit app background transparent so video shows */
+  .stApp {{
+    background: transparent !important;
+  }}
+  [data-testid="stAppViewContainer"] {{
+    background: transparent !important;
+  }}
+  [data-testid="stHeader"] {{
+    background: transparent !important;
+  }}
+  [data-testid="stToolbar"], footer {{
+    visibility: hidden;
+    height: 0;
+  }}
+
+  /* Headings hierarchy */
+  h1, h2, h3 {{
+    color: var(--text-100) !important;
+    letter-spacing: -0.03em;
+  }}
+  h1 {{
+    font-weight: 650;
+  }}
+  h3 {{
+    font-weight: 600;
+  }}
+  p, .stMarkdown, .stCaption {{
+    color: var(--text-80);
+  }}
+  .stCaption {{
+    color: var(--text-60) !important;
+  }}
+
+  /* Liquid glass utility classes (available if you later wrap HTML) */
+  .liquid-glass {{
+    background: var(--glass-weak);
+    backdrop-filter: var(--blur-weak);
+    -webkit-backdrop-filter: var(--blur-weak);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-glow-inset);
+    border: 0;
+  }}
+  .liquid-glass-strong {{
+    background: var(--glass-strong);
+    backdrop-filter: var(--blur-strong);
+    -webkit-backdrop-filter: var(--blur-strong);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-glow-inset), var(--shadow-soft);
+    border: 0;
+  }}
+
+  /* Turn Streamlit bordered containers into glass cards */
+  [data-testid="stVerticalBlockBorderWrapper"] {{
+    background: var(--glass-strong) !important;
+    border: 0 !important;
+    border-radius: var(--radius-lg) !important;
+    box-shadow: var(--shadow-glow-inset), var(--shadow-soft) !important;
+    backdrop-filter: var(--blur-strong) !important;
+    -webkit-backdrop-filter: var(--blur-strong) !important;
+  }}
+  [data-testid="stVerticalBlockBorderWrapper"] > div {{
+    padding: 1.1rem 1.1rem 1rem;
+  }}
+
+  /* Soften separators */
+  hr {{
+    border: none;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+    margin: 1.2rem 0;
+  }}
+
+  /* Inputs: rounded, translucent */
+  [data-testid="stSelectbox"] div, 
+  [data-testid="stTextInput"] div,
+  [data-testid="stNumberInput"] div,
+  [data-testid="stSlider"] {{
+    color: var(--text-100) !important;
+  }}
+  .stTextInput input,
+  .stNumberInput input {{
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid var(--stroke) !important;
+    border-radius: 14px !important;
+    color: var(--text-100) !important;
+  }}
+  .stSelectbox [data-baseweb="select"] > div {{
+    background: rgba(255,255,255,0.06) !important;
+    border: 1px solid var(--stroke) !important;
+    border-radius: 14px !important;
+  }}
+  .stSelectbox * {{
+    color: var(--text-100) !important;
+  }}
+  /* Dropdown menu */
+  ul[role="listbox"] {{
+    background: rgba(16,16,20,0.92) !important;
+    border: 1px solid rgba(255,255,255,0.08) !important;
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+  }}
+
+  /* Buttons: glass CTA with hover/press */
+  .stButton > button {{
+    background: rgba(255,255,255,0.10) !important;
+    color: var(--text-100) !important;
+    border: 1px solid rgba(255,255,255,0.10) !important;
+    border-radius: var(--radius-pill) !important;
+    padding: 0.62rem 1rem !important;
+    box-shadow: var(--shadow-glow-inset), 0 14px 30px rgba(0,0,0,0.35) !important;
+    transition: transform 160ms ease, background 160ms ease, box-shadow 160ms ease;
+  }}
+  .stButton > button:hover {{
+    transform: scale(1.035);
+    background: rgba(255,255,255,0.14) !important;
+    box-shadow: var(--shadow-glow-inset), 0 18px 40px rgba(0,0,0,0.45) !important;
+  }}
+  .stButton > button:active {{
+    transform: scale(0.97);
+  }}
+
+  /* Primary buttons: slightly stronger */
+  .stButton > button[kind="primary"] {{
+    background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.08)) !important;
+    border: 1px solid rgba(255,255,255,0.14) !important;
+  }}
+
+  /* Dataframe container polish */
+  [data-testid="stDataFrame"] {{
+    background: rgba(255,255,255,0.04) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+    overflow: hidden;
+  }}
+
+  /* Metrics */
+  [data-testid="stMetric"] {{
+    background: rgba(255,255,255,0.06);
+    border-radius: 16px;
+    padding: 0.65rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.07);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+  }}
+  [data-testid="stMetricLabel"] {{
+    color: var(--text-60) !important;
+  }}
+  [data-testid="stMetricValue"] {{
+    color: var(--text-100) !important;
+    letter-spacing: -0.02em;
+  }}
+
+  /* Expanders */
+  [data-testid="stExpander"] {{
+    background: rgba(255,255,255,0.05) !important;
+    border-radius: 16px !important;
+    border: 1px solid rgba(255,255,255,0.06) !important;
+  }}
+  [data-testid="stExpander"] summary {{
+    color: var(--text-80) !important;
+  }}
+
+  /* Sidebar glass */
+  section[data-testid="stSidebar"] {{
+    background: rgba(0,0,0,0.25) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid rgba(255,255,255,0.06);
+  }}
+</style>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 def init_client():
     load_dotenv()
@@ -79,7 +323,7 @@ def render_landing():
             with col_cta_1:
                 if st.button("Start Evaluation", type="primary"):
                     st.session_state["page"] = "evaluation"
-                    st.experimental_rerun()
+                    st.rerun()
             with col_cta_2:
                 st.caption("No credit card required. Start in under 2 minutes.")
 
@@ -89,15 +333,15 @@ def render_landing():
         with col2:
             st.markdown("###### Workflow preview")
             with st.container(border=True):
-                st.caption("High-level flow (placeholder UI)")
+                st.caption("End-to-end fraud evaluation in seconds")
                 step_cols = st.columns(3)
                 with step_cols[0]:
-                    st.metric("1. Ingest", "Case data")
+                    st.metric("1. Ingest", "Transaction context")
                 with step_cols[1]:
-                    st.metric("2. Evaluate", "Guided Q&A")
+                    st.metric("2. Evaluate", "Guided risk analysis")
                 with step_cols[2]:
                     st.metric("3. Decide", "AI insights")
-                st.progress(0.6, text="Average time-to-decision reduction")
+                st.progress(0.6, text="Average time-to-decision reduction  ↓ 60%")
 
     st.write("---")
 
@@ -491,6 +735,7 @@ def render_evaluation():
 
 
 def main():
+    inject_liquid_glass_theme()
     if "page" not in st.session_state:
         st.session_state["page"] = "landing"
 
@@ -503,7 +748,7 @@ def main():
         )
         st.markdown("---")
         st.caption(
-            "Use the landing page to introduce the app, then switch to Evaluation "
+            "Use the Evaluation page "
             "to run live fraud risk reviews."
         )
 
