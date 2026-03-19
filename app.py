@@ -103,7 +103,7 @@ def inject_liquid_glass_theme():
   [data-testid="stHeader"] {{
     background: transparent !important;
   }}
-  [data-testid="stToolbar"], footer {{
+  footer {{
     visibility: hidden;
     height: 0;
   }}
@@ -244,6 +244,31 @@ def inject_liquid_glass_theme():
     letter-spacing: -0.02em;
   }}
 
+  /* Workflow preview (Landing) metric values */
+  .workflow-preview-card [data-testid="stMetricValue"] {{
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+  }}
+  .workflow-preview-card [data-testid="stMetricLabel"] {{
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+  }}
+  /* Evaluation main row: stack results below details on mobile */
+  @media (max-width: 768px) {{
+    .evaluation-main-row [data-testid="stHorizontalBlock"] {{
+      display: block !important;
+    }}
+    .evaluation-main-row [data-testid="stHorizontalBlock"] > div,
+    .evaluation-main-row [data-testid="stHorizontalBlock"] > [data-testid="column"] {{
+      width: 100% !important;
+      flex: 1 1 100% !important;
+      max-width: 100% !important;
+      min-width: 100% !important;
+      padding-right: 0 !important;
+      padding-left: 0 !important;
+    }}
+  }}
+
   /* Expanders */
   [data-testid="stExpander"] {{
     background: rgba(255,255,255,0.05) !important;
@@ -333,6 +358,10 @@ def render_landing():
         with col2:
             st.markdown("###### Workflow preview")
             with st.container(border=True):
+                st.markdown(
+                    "<div class='workflow-preview-card'>",
+                    unsafe_allow_html=True,
+                )
                 st.caption("End-to-end fraud evaluation in seconds")
                 step_cols = st.columns(3)
                 with step_cols[0]:
@@ -342,6 +371,7 @@ def render_landing():
                 with step_cols[2]:
                     st.metric("3. Decide", "AI insights")
                 st.progress(0.6, text="Average time-to-decision reduction  ↓ 60%")
+                st.markdown("</div>", unsafe_allow_html=True)
 
     st.write("---")
 
@@ -374,46 +404,39 @@ def render_landing():
 
     st.write("---")
     st.markdown("### How it works")
-    hw_col1, hw_col2 = st.columns([1, 1])
-    with hw_col1:
-        st.markdown("1. **Connect your case data**")
-        st.caption(
-            "Import transaction details, user metadata, and alerts from your fraud stack "
-            "or upload a simple file."
-        )
-        st.markdown("2. **Answer guided questions**")
-        st.caption(
-            "Follow a structured, configurable flow that keeps coverage consistent "
-            "across analysts."
-        )
-        st.markdown("3. **Review AI insights**")
-        st.caption(
-            "Surface anomalies, patterns, and suggested escalation paths in real time."
-        )
-        st.markdown("4. **Share & export**")
-        st.caption(
-            "Instantly generate a clear, auditable summary for stakeholders and systems."
-        )
-    with hw_col2:
-        st.info(
-            "🎥 Product demo placeholder\n\n"
-            "Drop GIFs or screenshots of the evaluation experience here."
-        )
+    st.markdown("1. **Connect your case data**")
+    st.caption(
+        "Import transaction details, user metadata, and alerts from your fraud stack "
+        "or upload a simple file."
+    )
+    st.markdown("2. **Answer guided questions**")
+    st.caption(
+        "Follow a structured, configurable flow that keeps coverage consistent "
+        "across analysts."
+    )
+    st.markdown("3. **Review AI insights**")
+    st.caption(
+        "Surface anomalies, patterns, and suggested escalation paths in real time."
+    )
+    st.markdown("4. **Share & export**")
+    st.caption(
+        "Instantly generate a clear, auditable summary for stakeholders and systems."
+    )
 
     st.write("---")
-    st.markdown("### What teams are saying (placeholder)")
+    st.markdown("### What teams are saying")
     t_col1, t_col2 = st.columns(2)
     with t_col1:
-        st.markdown("**Alex Lee** · Head of Fraud Operations")
+        st.markdown("**Alex L.** · Head of Fraud Operations")
         st.caption(
-            "“Placeholder quote about cutting evaluation times and standardizing reviews "
-            "without adding headcount.”"
+            "“We reduced evaluation time significantly while keeping decisions consistent across the team. "
+    "The structured flow makes it easy to review cases without second-guessing.”"
         )
     with t_col2:
-        st.markdown("**Riya Menon** · Director of Risk & Compliance")
+        st.markdown("**Riya M.** · Director of Risk & Compliance")
         st.caption(
-            "“Placeholder quote about having consistent, defensible documentation for "
-            "every high-risk escalation.”"
+            "“We now have consistent, audit-ready documentation for every high-risk case, "
+    "which makes reviews and compliance much easier.”"
         )
 
 
@@ -539,31 +562,45 @@ def render_evaluation():
         st.session_state["tx_behavior"] = defaults["behavioral_anomaly_score"]
 
     # ----- Transaction form + Assess Risk (left column) -----
+    st.markdown("<div class='evaluation-main-row'>", unsafe_allow_html=True)
     tx_col1, tx_col2 = st.columns(2)
     with tx_col1:
         with st.container(border=True):
             st.markdown("**Transaction Details**")
             r1a, r1b = st.columns(2)
             with r1a:
-                amount = st.number_input("Amount ($)", value=defaults["amount"], key="tx_amount")
-                location = st.text_input("Location", value=defaults["location"], key="tx_location")
+                amount = st.number_input(
+                    "Amount ($)",
+                    key="tx_amount",
+                    step=1,
+                    format="%d",
+                )
+                location = st.text_input("Location", key="tx_location")
             with r1b:
                 device_changed = st.selectbox(
                     "New Device?",
                     ["No", "Yes"],
-                    index=0 if defaults["device_changed"] == "No" else 1,
                     key="tx_device",
                 )
-                account_age = st.number_input("Account Age (mo)", value=defaults["account_age_months"], key="tx_age")
+                account_age = st.number_input(
+                    "Account Age (mo)",
+                    key="tx_age",
+                    step=1,
+                    format="%d",
+                )
             r2a, r2b = st.columns(2)
             with r2a:
-                past_flags = st.number_input("Past Flags", value=defaults["previous_flags"], key="tx_flags")
+                past_flags = st.number_input(
+                    "Past Flags",
+                    key="tx_flags",
+                    step=1,
+                    format="%d",
+                )
             with r2b:
                 behavior_score = st.slider(
                     "Behavior Score (0–100)",
                     0,
                     100,
-                    value=defaults["behavioral_anomaly_score"],
                     key="tx_behavior",
                 )
 
@@ -642,6 +679,7 @@ def render_evaluation():
                         st.caption(p["customer_message"])
             else:
                 st.caption("Run **Assess Risk** to see results here.")
+    st.markdown("</div>", unsafe_allow_html=True)
 
     # ----- Bottom row: Audit Log | Risk Trend Chart -----
     st.markdown("")  # spacing
@@ -678,7 +716,39 @@ def render_evaluation():
                     for log in logs
                 ]
             )
-            st.dataframe(df, use_container_width=True, height=200)
+            # Liquid-glass table styling (all cells at 40% opacity fill)
+            table_styler = (
+                df.style.set_properties(
+                    **{
+                        "background-color": "rgba(255, 255, 255, 0.4)",
+                        "color": "rgba(255, 255, 255, 0.9)",
+                    }
+                ).set_table_styles(
+                    [
+                        {
+                            "selector": "thead th",
+                            "props": [
+                                ("background-color", "rgba(255, 255, 255, 0.4)"),
+                                ("color", "rgba(255, 255, 255, 0.95)"),
+                            ],
+                        },
+                        {
+                            "selector": "tbody td",
+                            "props": [
+                                ("background-color", "rgba(255, 255, 255, 0.4)"),
+                                ("color", "rgba(255, 255, 255, 0.9)"),
+                            ],
+                        },
+                        {
+                            "selector": "tbody tr",
+                            "props": [
+                                ("background-color", "rgba(255, 255, 255, 0.4)"),
+                            ],
+                        },
+                    ]
+                )
+            )
+            st.dataframe(table_styler, use_container_width=True, height=200)
             csv_data = pd.DataFrame(
                 [
                     {
@@ -720,12 +790,14 @@ def render_evaluation():
             if not chart_df.empty:
                 chart = (
                     alt.Chart(chart_df)
-                    .mark_line(point=True)
+                    .mark_line(point=True, opacity=0.4)
                     .encode(
                         x=alt.X("index", title="Transaction #"),
                         y=alt.Y("Risk Score", title="Risk Score", scale=alt.Scale(domain=[0, 100])),
                         color="Risk Level",
                     )
+                    .properties(background="transparent")
+                    .configure_view(fillOpacity=0, strokeWidth=0)
                 )
                 st.altair_chart(chart, use_container_width=True)
             else:
