@@ -1,7 +1,7 @@
 # **AI Risk Escalation System for Fraud Signals**
 
 **Automated Assessment · Smart Escalation · Full Traceability**
-
+🔗 [Launch the App](https://ai-fraud-escalation.streamlit.app)
 ---
 
 ## **Overview**
